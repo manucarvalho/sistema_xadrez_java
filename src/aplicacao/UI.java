@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import xadrez.Cor;
+import xadrez.PartidaXadrez;
 import xadrez.PecaXadrez;
 import xadrez.PosicaoXadrez;
 
@@ -36,20 +37,30 @@ public class UI {
 		System.out.flush();
 	}	
 	
+	public static void imprimirPartida(PartidaXadrez partidaXadrez) {
+		imprimirTabuleiro(partidaXadrez.getPecas());
+		System.out.println();
+		System.out.println("Turno: " + partidaXadrez.getTurno());
+		System.out.println("Esperando o jogador: " + partidaXadrez.getJogadorAtual());
+	} 
+	
 	public static void imprimirTabuleiro(PecaXadrez[][] pecas) { 
 		for (int i=0; i<pecas.length; i++) {
 			System.out.print((8 - i) + " ");
 			for (int j=0; j<pecas.length; j++) {
-				imprimirPeca(pecas[i][j]);
+				imprimirPeca(pecas[i][j], false);
 			}
 			System.out.println();
 		}
 		System.out.println("  a b c d e f g h");
 	}
 	
-	public static void imprimirPeca(PecaXadrez peca) {
+	public static void imprimirPeca(PecaXadrez peca, boolean fundoTela) {
+		if (fundoTela == true) {
+			System.out.print(ANSI_BLUE_BACKGROUND);
+		}
 		if (peca == null) {
-			System.out.print("-");
+			System.out.print("-"+ ANSI_RESET);
 		} else {
 			if (peca.getCor() == Cor.BRANCO) {
                 System.out.print(ANSI_WHITE + peca + ANSI_RESET);
@@ -71,5 +82,18 @@ public class UI {
 			throw new InputMismatchException("Erro lendo PosicaoXadrez. Valores validos são de a1 a h8.");
 		}
 	}
+	
+	public static void imprimirTabuleiro(PecaXadrez[][] pecas, boolean[][] movimentosPossiveis) { 
+		for (int i=0; i<pecas.length; i++) {
+			System.out.print((8 - i) + " ");
+			for (int j=0; j<pecas.length; j++) {
+				imprimirPeca(pecas[i][j], movimentosPossiveis[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println("  a b c d e f g h");
+	}
+	
+	
 
 }
