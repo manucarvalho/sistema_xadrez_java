@@ -31,8 +31,8 @@ public class PosicaoXadrez {
 		return new Posicao(8 - linha, coluna - 'a');
 	}
 	
-	protected PosicaoXadrez daPosicao(Posicao posicao) {
-		return new PosicaoXadrez((char)('a' - posicao.getColuna()), 8 - posicao.getLinha());
+	protected static PosicaoXadrez daPosicao(Posicao posicao) {
+		return new PosicaoXadrez((char)('a' + posicao.getColuna()), 8 - posicao.getLinha());
 	}
 	
 	
