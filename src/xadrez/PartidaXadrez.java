@@ -18,9 +18,14 @@ public class PartidaXadrez {
 	private List<Peca> pecasCapturadas = new ArrayList<>();
 	private List<Peca> pecasNoTabuleiro = new ArrayList<>();
 	private boolean cheque; 
+	private boolean chequeMate;
 			
 	public boolean isCheque() {
 		return cheque;
+	}
+	
+	public boolean isChequeMate() {
+		return chequeMate;
 	}
 
 	public int getTurno() {
@@ -54,10 +59,11 @@ public class PartidaXadrez {
 	}
 	
 	private void configuracaoInicial() {
-		posicionarNovaPeca('a', 1, new Torre(tabuleiro, Cor.BRANCO));
-		posicionarNovaPeca('d', 1, new Rei(tabuleiro, Cor.BRANCO));
-		posicionarNovaPeca('a', 8, new Torre(tabuleiro, Cor.PRETO));
-		posicionarNovaPeca('d', 8, new Rei(tabuleiro, Cor.PRETO));
+		posicionarNovaPeca('h', 7, new Torre(tabuleiro, Cor.BRANCO));
+		posicionarNovaPeca('d', 1, new Torre(tabuleiro, Cor.BRANCO));
+		posicionarNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO));
+		posicionarNovaPeca('b', 8, new Torre(tabuleiro, Cor.PRETO));
+		posicionarNovaPeca('a', 8, new Rei(tabuleiro, Cor.PRETO));
 	}
 	
 	public PecaXadrez fazerMovimentoXadrez(PosicaoXadrez posicaoOrigem, PosicaoXadrez posicaoDestino) {
@@ -71,7 +77,11 @@ public class PartidaXadrez {
 			throw new ExcecaoXadrez("Você não pode se colocar em cheque.");
 		}
 		cheque = (verificarCheque(oponente(jogadorAtual))) ? true : false;
-		proximoTurno();
+		if (verificarChequeMate(oponente(jogadorAtual)) == true){
+			chequeMate = true;
+		} else {
+			proximoTurno();
+		}		
 		return (PecaXadrez) pecaCapturada;
 	}
 	
@@ -88,7 +98,8 @@ public class PartidaXadrez {
 	}
 	
 	private Peca fazerMovimento(Posicao origem, Posicao destino) {
-		Peca pecaOrigem = tabuleiro.removerPeca(origem);
+		PecaXadrez pecaOrigem = (PecaXadrez)tabuleiro.removerPeca(origem);
+		pecaOrigem.aumentarContadorMov();
 		Peca pecaCapturada = tabuleiro.removerPeca(destino);
 		tabuleiro.posicionarPeca(pecaOrigem, destino);
 		if (pecaCapturada != null) {
@@ -116,7 +127,8 @@ public class PartidaXadrez {
 	}
 	
 	public void desfazerMovimento(Posicao origem, Posicao destino, Peca pecaCapturada) {
-		Peca p = tabuleiro.removerPeca(destino);
+		PecaXadrez p = (PecaXadrez)tabuleiro.removerPeca(destino);
+		p.diminuirContadorMov();
 		tabuleiro.posicionarPeca(p, origem);
 		if (pecaCapturada != null) {
 			tabuleiro.posicionarPeca(pecaCapturada, destino);
@@ -149,6 +161,31 @@ public class PartidaXadrez {
 			}
 		}
 		return false;
+	}
+	
+	private boolean verificarChequeMate(Cor cor) {
+		if (verificarCheque(cor) == false) {
+			return false;
+		}
+		List<Peca> pecas = pecasNoTabuleiro.stream().filter(x->((PecaXadrez)x).getCor() == cor).collect(Collectors.toList());
+		for (Peca p : pecas) {
+			boolean[][] mat = p.movimentosPossiveis();
+			for (int i=0; i<tabuleiro.getLinha();i++) {
+				for (int j=0; j<tabuleiro.getColuna();j++) {
+					if (mat[i][j]) {
+						Posicao origem = ((PecaXadrez)p).getPosicaoXadrez().paraPosicao();
+						Posicao destino = new Posicao(i,j);
+						Peca capturada = fazerMovimento(origem,destino);
+						boolean testeCheque = verificarCheque(cor);
+						desfazerMovimento(origem, destino, capturada);
+						if (testeCheque == false) {
+							return false;
+						}						
+					}
+				}					
+			}
+		}
+		return true;
 	}
 }
 

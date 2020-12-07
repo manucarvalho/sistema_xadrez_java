@@ -46,10 +46,16 @@ public class UI {
 		imprimirPecasCapturadas(pecasCapturadas);
 		System.out.println();
 		System.out.println("Turno: " + partidaXadrez.getTurno());
-		System.out.println("Esperando o jogador: " + partidaXadrez.getJogadorAtual());
-		if (partidaXadrez.isCheque() == true) {
-			System.out.println("Cheque!");
+		if (partidaXadrez.isChequeMate() == true) {
+			System.out.println("Cheque-Mate!");
+			System.out.println("Vencedor: " + partidaXadrez.getJogadorAtual());
+		} else {
+			System.out.println("Esperando o jogador: " + partidaXadrez.getJogadorAtual());
+			if (partidaXadrez.isCheque() == true) {
+				System.out.println("Cheque!");
+			}
 		}
+		
 	} 
 	
 	public static void imprimirTabuleiro(PecaXadrez[][] pecas) { 

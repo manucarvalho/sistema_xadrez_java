@@ -7,6 +7,11 @@ import tabuleiro.Tabuleiro;
 public abstract class PecaXadrez extends Peca{
 	
 	private Cor cor;
+	private int contadorMovimento;
+	
+	public int getContadorMovimento() {
+		return contadorMovimento;
+	}
 		
 	public PecaXadrez(Tabuleiro tabuleiro, Cor cor) {
 		super(tabuleiro);
@@ -27,6 +32,14 @@ public abstract class PecaXadrez extends Peca{
 			return true;
 		}
 		return false;
+	}
+	
+	public void aumentarContadorMov() {
+		contadorMovimento++;
+	}
+	
+	public void diminuirContadorMov() {
+		contadorMovimento--;
 	}
 	
 }
