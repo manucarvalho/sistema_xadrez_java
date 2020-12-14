@@ -37,6 +37,15 @@ public class Programa {
 				if (pecaCapturada != null) {
 					pecasCapturadas.add(pecaCapturada);
 				}
+				if (partidaXadrez.getPromovido() != null) {
+					System.out.print("Digite a peça para promoção [B/T/C/Q]: ");
+					String tipo = ler.nextLine().toUpperCase();
+					while (!tipo.equals("B")  && !tipo.equals("C")  && !tipo.equals("T")  && !tipo.equals("Q")) {
+						System.out.print("Entrada inválida. Digite a peça para promoção [B/T/C/Q]: ");
+						tipo = ler.nextLine().toUpperCase();
+					}
+					partidaXadrez.substituirPecaPromovida(tipo);
+				}
 			}
 			catch (ExcecaoXadrez e) {
 				System.out.println(e.getMessage());
